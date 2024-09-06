@@ -1911,6 +1911,9 @@ iso9660_close(struct archive_write *a)
 		 * if there is no file entry, converters are still
 		 * uninitialized. */
 		if (iso9660->sconv_to_utf16be == NULL) {
+			char* code = a->archive.current_code;
+			a->archive.current_code = "UTF-8";
+
 			iso9660->sconv_to_utf16be =
 			    archive_string_conversion_to_charset(
 				&(a->archive), "UTF-16BE", 1);
@@ -1923,6 +1926,8 @@ iso9660_close(struct archive_write *a)
 			if (iso9660->sconv_from_utf16be == NULL)
 				/* Couldn't allocate memory */
 				return (ARCHIVE_FATAL);
+
+			a->archive.current_code = code;
 		}
 	}
 
@@ -4734,6 +4739,9 @@ isofile_gen_utility_names(struct archive_write *a, struct isofile *file)
 		size_t u16len, ulen_last;
 
 		if (iso9660->sconv_to_utf16be == NULL) {
+			char* code = a->archive.current_code;
+			a->archive.current_code = "UTF-8";
+
 			iso9660->sconv_to_utf16be =
 			    archive_string_conversion_to_charset(
 				&(a->archive), "UTF-16BE", 1);
@@ -4746,6 +4754,8 @@ isofile_gen_utility_names(struct archive_write *a, struct isofile *file)
 			if (iso9660->sconv_from_utf16be == NULL)
 				/* Couldn't allocate memory */
 				return (ARCHIVE_FATAL);
+
+			a->archive.current_code = code;
 		}
 
 		/*
